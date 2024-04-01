@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Admins;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class AdminsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = $request->get("user");
-        Admins::where('admins', $user);
-        $admin = new Admins();
-        $admin->status = "admin";
-        return $admin;
+        if (Admins::where("users", $user)->exists()) {
+            return response()->json(['status' => 'admin']);
+        }
+        else {
+            return response()->json(['status' => 'user']);
+        }
     }
 
     /**
