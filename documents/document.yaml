@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: StudgorodAdminAPI
+  version: 1.0.0
+servers:
+  - url: http://a0872478.xsph.ru/api
+  - url: http://127.0.0.1:8000/api
+tags:
+  - name: Admin
+    description: Все пути для администратора
+paths:
+  /admin:
+    post:
+      x-lg-handler: 'App\Http\Controllers\Api\AdminController@index'
+      summary: Проверить является ли пользователь админом
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: ОРИОКС ID пользователя
+      responses:
+        '200':
+          description: Пользователь - админ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Результат
+        '401':
+          description: Возникла ошибка
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Ошибка
