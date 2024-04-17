@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ApiBffController extends Controller
 {
@@ -48,5 +49,63 @@ class ApiBffController extends Controller
         } else {
             return new ApiResource(null, 'status', 'Ошибка: не удалось определить тип запроса или маршрут.', 404);
         }
+    }
+
+    public function redirect_auth_login(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
+    {
+        $requestData = [
+            "username" => $request->input("username"),
+            "password" => $request->input("password"),
+            "token" => $request->input("token")
+        ];
+        return Http::get('http://127.0.0.1:8000/api/authorize', $requestData);
+    }
+
+    public function redirect_auth_quit(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
+    {
+        $requestData = [
+            "token" => $request->input("token")
+        ];
+        return Http::delete('http://127.0.0.1:8000/api/authorize', $requestData);
+    }
+
+    public function redirect_news_store(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
+    {
+        $requestData = [
+            "title" => $request->input("title"),
+            "content" => $request->input("content"),
+            "token" => $request->input("token")
+        ];
+        return Http::post('http://127.0.0.1:8000/api/news', $requestData);
+    }
+
+    public function redirect_news_show(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
+    {
+        $requestData = [
+            "token" => $request->input("token"),
+            "cursor" => $request->input("cursor")
+        ];
+        return Http::get('http://127.0.0.1:8000/api/news', $requestData);
+    }
+
+    public function redirect_news_update(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
+    {
+        $requestData = [
+            "title" => $request->input("title"),
+            "content" => $request->input("content"),
+            "img" => $request->input("img"),
+            "id" => $request->input("id"),
+            "token" => $request->input("token")
+        ];
+        return Http::put('http://127.0.0.1:8000/api/news', $requestData);
+    }
+
+    public function redirect_news_destroy(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
+    {
+        $requestData = [
+            "id" => $request->input("id"),
+            "token" => $request->input("token")
+        ];
+        return Http::delete('http://127.0.0.1:8000/api/news', $requestData);
     }
 }
