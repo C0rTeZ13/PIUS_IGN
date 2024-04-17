@@ -3,8 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::post('/', [\App\Http\Controllers\Api\ApiBffController::class, 'redirect']);
 
-Route::post('/admin', [\App\Http\Controllers\Api\AdminsController::class, 'index']);
+Route::get('/authorize', function () {
+    return redirect("http://127.0.0.1/Studgorod_API/public/authorize");
+})->name("api.authorize.login");
