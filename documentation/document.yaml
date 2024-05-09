@@ -1,0 +1,177 @@
+openapi: 3.0.0
+info:
+  title: Studgorod BFF API
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:8000/api
+tags:
+  - name: BFF
+    description: Один requestBody на все запросы
+paths:
+  /:
+    post:
+      summary: Все виды запросов для Android приложения
+      tags:
+        - BFF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                route: # Брать из ApiBffController пока что
+                  type: string
+                  description: Название пути до домена
+                  example: authorize_login
+                method:
+                  type: string
+                  description: HTTP метод
+                  example: GET
+                username:
+                  type: string
+                  description: Имя пользователя для входа
+                  example: userID
+                password:
+                  type: string
+                  format: password
+                  description: Пароль для входа
+                  example: password
+                token:
+                  type: string
+                  description: Токен пользователя
+                  example: null
+                title:
+                  type: string
+                  description: Название новости
+                  example: test
+                content:
+                  type: string
+                  description: Описание новости
+                  example: test
+                img:
+                  type: string
+                  description: Путь до картинки
+                  example: unchanged
+                id:
+                  type: integer
+                  description: ID объекта
+                  example: 0
+                cursor:
+                  type: string
+                  description: Курсор для пагинации
+                  example: null
+      responses:
+        '200':
+          description: Успешное выполнение запроса
+          content:
+            application/vnd.authorize.login+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      acc_token:
+                        type: string
+                      is_admin:
+                        type: boolean
+                      full_name:
+                        type: string
+                      group:
+                        type: string
+                  meta:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        example: 200
+                  error:
+                    type: object  # Пустой объект для ошибок
+            application/vnd.authorize.quit+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                  meta:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        example: 204
+                  error:
+                    type: object  # Пустой объект для ошибок
+            application/vnd.news.show+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          example: test
+                        content:
+                          type: string
+                          example: test
+                        img:
+                          type: string
+                          description: Путь до изображения
+                          example:
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Время создания новости
+                  meta:
+                    type: object
+                    properties:
+                      cursor:
+                        type: string
+                        example: null
+                      code:
+                        type: integer
+                        example: 200
+                  error:
+                    type: object  # Пустой объект для ошибок
+            application/vnd.news.store+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          example: test
+                        content:
+                          type: string
+                          example: test
+                        img:
+                          type: string
+                          description: Путь до изображения
+                          example:
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Время создания новости
+                  meta:
+                    type: object
+                    properties:
+                      cursor:
+                        type: string
+                        example: null
+                      code:
+                        type: integer
+                        example: 200
+                  error:
+                    type: object  # Пустой объект для ошибок
+        # TODO: Дописать news.store, news.update, news.destroy
+        # TODO: Дописать коды ошибок

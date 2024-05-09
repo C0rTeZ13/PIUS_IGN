@@ -20,9 +20,9 @@ class ApiBffController extends Controller
         ];
         $routes = [
             // GET
-            'authorize_login' => 'api.authorize.login',
             'news_show' => 'api.news.show',
             // POST
+            'authorize_login' => 'api.authorize.login',
             'news_store' => 'api.news.store',
             // PUT
             'news_update' => 'api.news.update',
@@ -40,14 +40,14 @@ class ApiBffController extends Controller
                     'POST' => Request::create(route($route), 'POST', $request->all()),
                     'PUT' => Request::create(route($route), 'PUT', $request->all()),
                     'DELETE' => Request::create(route($route), 'DELETE', $request->all()),
-                    default => new ApiResource(null, 'status', 'Ошибка: не удалось определить маршрут.', 400)
+                    default => response()->json(["error" => "Ошибка: не удалось определить маршрут."], 400)
                 };
                 return app()->handle($newRequest);
-            } catch (\Exception) {
-                return new ApiResource(null, 'status', 'Ошибка: не удалось определить тип запроса или маршрут.', 404);
+            } catch (\Exception $e) {
+                return response()->json(["error" => $e->getMessage()], 404);
             }
         } else {
-            return new ApiResource(null, 'status', 'Ошибка: не удалось определить тип запроса или маршрут.', 404);
+            return response()->json(["error" => "Ошибка: не удалось определить тип запроса или маршрут."], 404);
         }
     }
 
@@ -58,7 +58,7 @@ class ApiBffController extends Controller
             "password" => $request->input("password"),
             "token" => $request->input("token")
         ];
-        return Http::get('http://127.0.0.1:8000/api/authorize', $requestData);
+        return Http::post('http://127.0.0.2:8000/api/authorize', $requestData);
     }
 
     public function redirect_auth_quit(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
@@ -66,7 +66,7 @@ class ApiBffController extends Controller
         $requestData = [
             "token" => $request->input("token")
         ];
-        return Http::delete('http://127.0.0.1:8000/api/authorize', $requestData);
+        return Http::delete('http://127.0.0.2:8000/api/authorize', $requestData);
     }
 
     public function redirect_news_store(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
@@ -74,9 +74,11 @@ class ApiBffController extends Controller
         $requestData = [
             "title" => $request->input("title"),
             "content" => $request->input("content"),
-            "token" => $request->input("token")
+            "token" => $request->input("token"),
+            "img" => $request->input("img"),
+            "extension" => $request->input("extension")
         ];
-        return Http::post('http://127.0.0.1:8000/api/news', $requestData);
+        return Http::post('http://127.0.0.3:8000/news', $requestData);
     }
 
     public function redirect_news_show(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
@@ -85,7 +87,7 @@ class ApiBffController extends Controller
             "token" => $request->input("token"),
             "cursor" => $request->input("cursor")
         ];
-        return Http::get('http://127.0.0.1:8000/api/news', $requestData);
+        return Http::get('http://127.0.0.3:8000/news', $requestData);
     }
 
     public function redirect_news_update(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
@@ -97,7 +99,7 @@ class ApiBffController extends Controller
             "id" => $request->input("id"),
             "token" => $request->input("token")
         ];
-        return Http::put('http://127.0.0.1:8000/api/news', $requestData);
+        return Http::put('http://127.0.0.3:8000/news', $requestData);
     }
 
     public function redirect_news_destroy(Request $request): \GuzzleHttp\Promise\PromiseInterface|\Illuminate\Http\Client\Response
@@ -106,6 +108,6 @@ class ApiBffController extends Controller
             "id" => $request->input("id"),
             "token" => $request->input("token")
         ];
-        return Http::delete('http://127.0.0.1:8000/api/news', $requestData);
+        return Http::delete('http://127.0.0.3:8000/news', $requestData);
     }
 }
